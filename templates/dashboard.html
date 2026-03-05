@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+<!-- TOTAL EXPENSE CARD -->
+<div class="row mb-4">
+
+<div class="col-md-4">
+
+<div class="card p-3">
+
+<h5>Total Expense</h5>
+
+<h3>₹{{ total_expense }}</h3>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- EXPENSE CHART -->
+<div class="card p-4 mb-4">
+
+<h5 class="mb-3">Expense Chart</h5>
+
+<div class="d-flex justify-content-center">
+
+<div style="width:420px; height:300px;">
+
+<canvas id="expenseChart"></canvas>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- EXPENSE TABLE -->
+<div class="card p-4">
+
+<h5 class="mb-3">Recent Expenses</h5>
+
+<div class="table-responsive">
+
+<table class="table table-striped">
+
+<thead>
+
+<tr>
+<th>Title</th>
+<th>Category</th>
+<th>Amount</th>
+<th>Date</th>
+<th></th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for expense in expenses %}
+
+<tr>
+
+<td>{{ expense.title }}</td>
+
+<td>{{ expense.category }}</td>
+
+<td>₹{{ expense.amount }}</td>
+
+<td>{{ expense.date }}</td>
+
+<td>
+
+<a class="btn btn-sm btn-dark me-2"
+href="/edit/{{ expense.id }}/">
+Edit
+</a>
+
+<a class="btn btn-sm btn-outline-dark"
+href="/delete/{{ expense.id }}/">
+Delete
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const categoryData = [
+
+{% for item in category_summary %}
+{
+name:"{{ item.category__name }}",
+total:{{ item.total }}
+},
+{% endfor %}
+
+];
+
+const labels = categoryData.map(item => item.name);
+const data = categoryData.map(item => item.total);
+
+const centerTextPlugin = {
+id: 'centerText',
+
+beforeDraw(chart) {
+
+const {width, height, ctx} = chart;
+
+ctx.restore();
+
+const text = "₹{{ total_expense }}";
+
+const fontSize = (height / 180).toFixed(2);
+
+ctx.font = `bold ${fontSize}em sans-serif`;
+
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+
+const textX = width / 3;
+const textY = height / 2;
+
+ctx.fillStyle = "#000";
+ctx.fillText(text, textX, textY);
+
+ctx.save();
+
+}
+};
+
+const ctx = document.getElementById('expenseChart');
+
+new Chart(ctx,{
+
+type:'doughnut',
+
+data:{
+labels:labels,
+datasets:[{
+data:data,
+backgroundColor:[
+'#4E79A7',
+'#F28E2B',
+'#E15759',
+'#76B7B2',
+'#EDC948'
+],
+borderWidth:1
+}]
+},
+
+options:{
+cutout:'65%',
+responsive:true,
+maintainAspectRatio:false,
+
+plugins:{
+legend:{
+position:'right',
+align:'center'
+}
+},
+
+animation:{
+animateRotate:true,
+duration:1200
+}
+
+},
+
+plugins:[centerTextPlugin]
+
+});
+
+</script>
+
+{% endblock %}
