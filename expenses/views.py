@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import ExpenseForm
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from .models import Expense
 from django.db.models import Sum
@@ -80,10 +80,15 @@ def edit_expense(request, expense_id):
 
     return render(request, 'edit_expense.html', {'form': form})
 
-
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 
 def login_view(request):
+
+    error = None
 
     if request.method == "POST":
 
@@ -94,6 +99,38 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            return redirect('add_expense')
+            return redirect('dashboard')
 
-    return render(request, 'login.html')
+        else:
+            error = "Invalid username or password"
+
+    return render(request, 'login.html', {'error': error})
+
+def register_view(request):
+
+    error = None
+
+    if request.method == "POST":
+
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+
+        if password != confirm_password:
+            error = "Passwords do not match"
+
+        elif User.objects.filter(username=username).exists():
+            error = "Username already exists"
+
+        else:
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password
+            )
+
+            login(request, user)
+            return redirect('dashboard')
+
+    return render(request, "register.html", {"error": error})
