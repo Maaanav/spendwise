@@ -177,7 +177,7 @@ Users can add, edit, and delete expenses easily.
 
 **Manav Mangela**
 
-GitHub: [https://github.com/YOUR_USERNAME](https://github.com/YOUR_USERNAME)
+GitHub: [https://github.com/Maaanav](https://github.com/Maaanav)
 
 ---
 
