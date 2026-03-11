@@ -147,14 +147,13 @@ Open in browser: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ## 📸 Screenshots
 
-## 📸 Screenshots
-
 ### Dashboard
 ![Dashboard](images/s1.png)
 Shows total expense summary and category-wise visualization.
 
 ### Expense Management
 ![Expense Management](images/s2.png)
+
 Users can add, edit, and delete expenses easily.
 
 ### Analytics
